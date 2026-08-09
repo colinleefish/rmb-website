@@ -1,0 +1,20 @@
+{
+  "product": "rmb-desktop",
+  "version": "0.1.0",
+  "released_at": "2026-08-09T00:00:00Z",
+  "manifest": "0.1.0/manifest.json",
+  "platforms": {
+    "macos": {
+      "aarch64": {
+        "file": "RMB-Desktop_0.1.0_aarch64.dmg",
+        "url": "https://releases.re-mem-ber.me/0.1.0/RMB-Desktop_0.1.0_aarch64.dmg"
+      },
+      "x86_64": {
+        "file": "RMB-Desktop_0.1.0_x86_64.dmg",
+        "url": "https://releases.re-mem-ber.me/0.1.0/RMB-Desktop_0.1.0_x86_64.dmg"
+      }
+    },
+    "linux": {},
+    "windows": {}
+  }
+}

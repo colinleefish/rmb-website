@@ -1,68 +1,36 @@
-const DOWNLOADS_URL = "/downloads.json";
+const RELEASES_BASE = "https://releases.re-mem-ber.me";
 
-function initTabs() {
-  const platformTabs = document.getElementById("platform-tabs");
-  if (!platformTabs) return;
-
-  const tabs = [...platformTabs.querySelectorAll(".tab")];
-  const panes = [...document.querySelectorAll(".panel-pane[data-product='desktop']")];
-
-  function selectPlatform(platform) {
-    tabs.forEach((tab) => {
-      const active = tab.dataset.platform === platform;
-      tab.classList.toggle("active", active);
-      tab.setAttribute("aria-selected", String(active));
-    });
-    panes.forEach((pane) => {
-      const active = pane.dataset.platform === platform;
-      pane.classList.toggle("active", active);
-      pane.hidden = !active;
-    });
-  }
-
-  platformTabs.addEventListener("click", (event) => {
-    const tab = event.target.closest(".tab");
-    if (!tab?.dataset.platform) return;
-    selectPlatform(tab.dataset.platform);
-  });
+function preferredMacArch() {
+  const ua = navigator.userAgent.toLowerCase();
+  if (ua.includes("arm") || ua.includes("aarch64")) return "aarch64";
+  if (ua.includes("intel") || ua.includes("x86_64")) return "x86_64";
+  return "aarch64";
 }
 
-function initCopyButtons() {
-  document.querySelectorAll("[data-copy-target]").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const id = btn.getAttribute("data-copy-target");
-      const el = document.getElementById(id);
-      if (!el) return;
-      try {
-        await navigator.clipboard.writeText(el.value);
-        const original = btn.textContent;
-        btn.textContent = "Copied";
-        setTimeout(() => {
-          btn.textContent = original;
-        }, 1500);
-      } catch {
-        // ignore
-      }
-    });
-  });
+function pickMacArtifact(platforms) {
+  const macos = platforms?.macos;
+  if (!macos) return null;
+  const arch = preferredMacArch();
+  return macos[arch] || macos.aarch64 || macos.x86_64 || Object.values(macos)[0];
 }
 
 async function loadDownloads() {
-  const macosLink = document.getElementById("download-macos");
-  const macosMeta = document.getElementById("macos-meta");
-  if (!macosLink) return;
+  const link = document.getElementById("download-macos");
+  const versionEl = document.getElementById("download-version");
+  if (!link) return;
 
   try {
-    const res = await fetch(DOWNLOADS_URL, { cache: "no-store" });
+    const res = await fetch(`${RELEASES_BASE}/latest.json`, { cache: "no-store" });
     if (!res.ok) return;
     const data = await res.json();
-    const macos = data.products?.desktop?.platforms?.macos;
-    if (!macos?.url) return;
+    const artifact = pickMacArtifact(data.platforms);
+    if (artifact?.url) link.href = artifact.url;
 
-    macosLink.href = macos.url;
-    if (macos.version && macosMeta) {
-      const base = macosMeta.textContent.replace(/ · v[\d.]+$/, "");
-      macosMeta.textContent = `${base} · v${macos.version}`;
+    if (versionEl && data.version) {
+      const lang = window.SiteI18n?.readLang?.() || "en";
+      versionEl.textContent =
+        lang === "zh" ? `最新版本 v${data.version}` : `Latest v${data.version}`;
+      versionEl.hidden = false;
     }
   } catch {
     // Keep GitHub releases fallback from HTML.
@@ -70,21 +38,60 @@ async function loadDownloads() {
 }
 
 function initLang() {
+  if (!window.SiteI18n) return;
+
   let lang = window.SiteI18n.readLang();
   window.SiteI18n.applyTranslations(lang);
 
+  const picker = document.getElementById("lang-picker");
   const toggle = document.getElementById("lang-toggle");
-  if (!toggle) return;
+  const menu = document.getElementById("lang-picker-menu");
+  if (!picker || !toggle || !menu) return;
 
-  toggle.addEventListener("click", () => {
-    lang = lang === "zh" ? "en" : "zh";
+  let open = false;
+
+  function setOpen(next) {
+    open = next;
+    toggle.setAttribute("aria-expanded", String(open));
+    menu.toggleAttribute("hidden", !open);
+  }
+
+  toggle.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setOpen(!open);
+  });
+
+  menu.addEventListener("click", (event) => {
+    const option = event.target.closest(".lang-picker-option");
+    if (!option?.dataset.lang) return;
+
+    event.stopPropagation();
+    lang = option.dataset.lang;
     localStorage.setItem("rmb.site.lang", lang);
     window.SiteI18n.applyTranslations(lang);
-    toggle.textContent = lang === "zh" ? "EN" : "中文";
+    loadDownloads();
+    setOpen(false);
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!open) return;
+    if (picker.contains(event.target)) return;
+    setOpen(false);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && open) setOpen(false);
   });
 }
 
-initLang();
-initTabs();
-initCopyButtons();
-loadDownloads();
+function boot() {
+  initLang();
+  loadDownloads();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", boot);
+} else {
+  boot();
+}
