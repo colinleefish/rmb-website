@@ -7,6 +7,7 @@
         "macos": {
           "available": true,
           "url": "https://github.com/colinleefish/rmb-desktop/releases/latest",
+          "r2_base": "https://releases.re-mem-ber.me",
           "version": null,
           "filename": null,
           "architectures": ["aarch64", "x86_64"]
