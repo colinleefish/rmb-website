@@ -11,30 +11,29 @@ make serve
 # open http://127.0.0.1:8080
 ```
 
-## Deploy
+## Deploy (Cloudflare)
 
-### DNS
+Production stack:
 
-Point the apex domain at your host:
-
-| Type | Name | Value |
-|------|------|-------|
-| A | `@` | your server IPv4 |
-| AAAA | `@` | your server IPv6 (optional) |
-
-### rsync + Caddy
+| Service | URL |
+|---------|-----|
+| Pages (website) | https://re-mem-ber.me |
+| R2 (releases) | https://releases.re-mem-ber.me |
 
 ```bash
-rsync -avz --delete ./ user@your-server:/var/www/re-mem-ber.me/
+source ~/.config/Cloudflare/credentials
+export CLOUDFLARE_EMAIL="$CF_USERNAME" CLOUDFLARE_API_KEY="$CF_API_KEY"
+export http_proxy=http://127.0.0.1:1080 https_proxy=http://127.0.0.1:1080
+
+# deploy site
+npx wrangler pages deploy . --project-name=rmb-website --branch=main
+
+# upload release artifact
+npx wrangler r2 object put rmb-releases/RMB-Desktop_0.1.0_aarch64.dmg \
+  --file=./path/to/RMB-Desktop_0.1.0_aarch64.dmg --remote
 ```
 
-Copy [`Caddyfile`](./Caddyfile) to the server. Caddy obtains TLS automatically once DNS resolves.
-
-### GitHub Pages
-
-1. Enable Pages for this repo (Settings → Pages → deploy from `/` on `main`).
-2. Set custom domain to `re-mem-ber.me`.
-3. Add the DNS records GitHub shows.
+Public download URL: `https://releases.re-mem-ber.me/RMB-Desktop_0.1.0_aarch64.dmg`
 
 ## Download links
 
@@ -60,7 +59,7 @@ Copy [`Caddyfile`](./Caddyfile) to the server. Caddy obtains TLS automatically o
 }
 ```
 
-Or host `.dmg` files under `/releases/` on the same server.
+Or host `.dmg` files on R2 (`https://releases.re-mem-ber.me/...`).
 
 ## Layout
 
