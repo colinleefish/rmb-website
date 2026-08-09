@@ -1,0 +1,31 @@
+{
+  "products": {
+    "desktop": {
+      "visible": true,
+      "repo": "https://github.com/colinleefish/rmb-desktop",
+      "platforms": {
+        "macos": {
+          "available": true,
+          "url": "https://github.com/colinleefish/rmb-desktop/releases/latest",
+          "version": null,
+          "filename": null,
+          "architectures": ["aarch64", "x86_64"]
+        },
+        "linux": {
+          "available": false
+        },
+        "windows": {
+          "available": false
+        }
+      }
+    },
+    "server": {
+      "visible": false,
+      "repo": "https://github.com/colinleefish/rmb",
+      "platforms": {
+        "docker": { "available": false },
+        "linux": { "available": false }
+      }
+    }
+  }
+}

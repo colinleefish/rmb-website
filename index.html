@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RMB — Local-first memory for AI coding agents</title>
+  <meta name="description" content="RMB Desktop captures, distills, and recalls memories from your AI coding sessions. Everything runs locally on your machine.">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="32" height="32">
+      <span>RMB</span>
+    </a>
+    <nav class="header-nav">
+      <a href="https://github.com/colinleefish/rmb-desktop" target="_blank" rel="noopener">GitHub</a>
+      <button type="button" class="lang-toggle" id="lang-toggle" aria-label="Switch language">中文</button>
+      <a class="btn btn-primary header-download" href="#download" data-i18n="nav.download">Download</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="announcement">
+        <span class="announcement-badge" data-i18n="hero.badge">Preview</span>
+        <span data-i18n="hero.announcement">RMB Desktop for macOS. Linux and Windows coming soon.</span>
+      </div>
+      <h1 data-i18n="hero.title">Local-first memory for AI coding agents</h1>
+      <p class="hero-lead" data-i18n="hero.lead">
+        Capture sessions, distill them into structured memories, and recall what matters — all on your machine. No server required.
+      </p>
+    </section>
+
+    <section class="download-panel" id="download">
+      <div class="panel product-panel">
+        <div class="product-tabs" id="product-tabs" role="tablist" aria-label="Product">
+          <button type="button" class="tab active" role="tab" aria-selected="true" data-product="desktop" data-i18n="download.product.desktop">Desktop</button>
+          <!-- Server tab reserved for future release -->
+        </div>
+
+        <div class="platform-tabs" id="platform-tabs" role="tablist" aria-label="Platform">
+          <button type="button" class="tab active" role="tab" aria-selected="true" data-platform="macos">macOS</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-platform="linux">Linux</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-platform="windows">Windows</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-platform="source" data-i18n="download.tab.source">Source</button>
+        </div>
+
+        <div class="panel-body">
+          <div class="panel-pane active" data-product="desktop" data-platform="macos" role="tabpanel">
+            <div class="pane-row">
+              <div class="pane-copy">
+                <h2 data-i18n="download.macos.title">RMB Desktop for macOS</h2>
+                <p data-i18n="download.macos.lead">Drag to Applications, run the setup wizard, and connect your agents.</p>
+                <p class="pane-meta" id="macos-meta" data-i18n="download.macos.detail">Apple Silicon &amp; Intel · .dmg</p>
+              </div>
+              <a class="btn btn-primary download-btn" id="download-macos" href="https://github.com/colinleefish/rmb-desktop/releases/latest">
+                <span data-i18n="download.action">Download</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="panel-pane" data-product="desktop" data-platform="linux" role="tabpanel" hidden>
+            <div class="pane-row">
+              <div class="pane-copy">
+                <h2 data-i18n="download.linux.title">RMB Desktop for Linux</h2>
+                <p data-i18n="download.linux.lead">AppImage and .deb packages are on the roadmap.</p>
+                <p class="pane-meta" data-i18n="download.soon">Coming soon</p>
+              </div>
+              <button class="btn btn-secondary download-btn" type="button" disabled data-i18n="download.soon">Coming soon</button>
+            </div>
+          </div>
+
+          <div class="panel-pane" data-product="desktop" data-platform="windows" role="tabpanel" hidden>
+            <div class="pane-row">
+              <div class="pane-copy">
+                <h2 data-i18n="download.windows.title">RMB Desktop for Windows</h2>
+                <p data-i18n="download.windows.lead">Installer (.msi) is on the roadmap.</p>
+                <p class="pane-meta" data-i18n="download.soon">Coming soon</p>
+              </div>
+              <button class="btn btn-secondary download-btn" type="button" disabled data-i18n="download.soon">Coming soon</button>
+            </div>
+          </div>
+
+          <div class="panel-pane" data-product="desktop" data-platform="source" role="tabpanel" hidden>
+            <div class="pane-copy pane-copy-wide">
+              <h2 data-i18n="download.source.title">Build from source</h2>
+              <p data-i18n="download.source.lead">Requires Go 1.23+, Node.js, and Rust for the Tauri app.</p>
+            </div>
+            <div class="code-block">
+              <pre><code>git clone https://github.com/colinleefish/rmb-desktop.git
+cd rmb-desktop
+make build
+make app-dev</code></pre>
+              <button type="button" class="copy-btn" data-copy-target="source-code" aria-label="Copy">Copy</button>
+            </div>
+            <textarea id="source-code" class="sr-only" readonly>git clone https://github.com/colinleefish/rmb-desktop.git
+cd rmb-desktop
+make build
+make app-dev</textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="product-preview" aria-label="Product preview">
+      <div class="preview-window">
+        <div class="preview-chrome">
+          <span class="preview-dot"></span>
+          <span class="preview-dot"></span>
+          <span class="preview-dot"></span>
+          <span class="preview-title">rmb recall "authentication approach"</span>
+        </div>
+        <div class="preview-body">
+          <p class="preview-prompt"><span class="preview-user">you</span> what did we decide about auth last week?</p>
+          <p class="preview-response">
+            <span class="preview-agent">rmb</span>
+            <span data-i18n="preview.response">Recalled 3 memories from session <em>cursor-hook-setup</em> — JWT in httpOnly cookies, refresh rotation, no localStorage tokens.</span>
+          </p>
+          <div class="preview-results">
+            <div class="preview-result">
+              <span class="preview-tag" data-i18n="preview.tag.profile">profile</span>
+              <span data-i18n="preview.result1">Prefers httpOnly cookies over localStorage for tokens</span>
+            </div>
+            <div class="preview-result">
+              <span class="preview-tag" data-i18n="preview.tag.scene">scene</span>
+              <span data-i18n="preview.result2">Discussed refresh token rotation in session on Aug 2</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <h2 data-i18n="features.title">How it works</h2>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <h3 data-i18n="features.capture.title">Capture</h3>
+          <p data-i18n="features.capture.body">Hooks record conversation turns from your coding agents in the background.</p>
+        </article>
+        <article class="feature-card">
+          <h3 data-i18n="features.distill.title">Distill</h3>
+          <p data-i18n="features.distill.body">A local daemon turns raw chats into atoms, scenes, and durable memories.</p>
+        </article>
+        <article class="feature-card">
+          <h3 data-i18n="features.recall.title">Recall</h3>
+          <p data-i18n="features.recall.body">Hybrid full-text and vector search brings the right context back into your sessions.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="/assets/logo.svg" alt="" width="24" height="24">
+        <span>RMB</span>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/colinleefish/rmb-desktop" target="_blank" rel="noopener">GitHub</a>
+      </div>
+      <p class="footer-copy">© 2026 re-mem-ber.me</p>
+    </div>
+  </footer>
+
+  <script src="/i18n.js"></script>
+  <script src="/main.js"></script>
+</body>
+</html>

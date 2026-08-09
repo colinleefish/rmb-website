@@ -1,0 +1,14 @@
+# Serve the static site at https://re-mem-ber.me
+# Copy to your server and run: caddy run --config Caddyfile
+
+re-mem-ber.me {
+	root * /var/www/re-mem-ber.me
+	file_server
+	encode gzip zstd
+
+	# Optional: host release artifacts alongside the site
+	handle_path /releases/* {
+		root * /var/www/re-mem-ber.me/releases
+		file_server
+	}
+}
